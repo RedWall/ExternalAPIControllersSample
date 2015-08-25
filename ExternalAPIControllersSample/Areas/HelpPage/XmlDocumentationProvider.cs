@@ -6,7 +6,12 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
 using ExternalAPIControllersSample.Areas.HelpPage.ModelDescriptions;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
+
+//Updated based on http://stackoverflow.com/questions/21895257/how-can-xml-documentation-for-web-api-include-documentation-from-beyond-the-main 
+//to support multiple xml comment files
 namespace ExternalAPIControllersSample.Areas.HelpPage
 {
     /// <summary>
@@ -14,7 +19,7 @@ namespace ExternalAPIControllersSample.Areas.HelpPage
     /// </summary>
     public class XmlDocumentationProvider : IDocumentationProvider, IModelDocumentationProvider
     {
-        private XPathNavigator _documentNavigator;
+        private List<XPathNavigator> _documentNavigators = new List<XPathNavigator>();
         private const string TypeExpression = "/doc/members/member[@name='T:{0}']";
         private const string MethodExpression = "/doc/members/member[@name='M:{0}']";
         private const string PropertyExpression = "/doc/members/member[@name='P:{0}']";
@@ -22,17 +27,33 @@ namespace ExternalAPIControllersSample.Areas.HelpPage
         private const string ParameterExpression = "param[@name='{0}']";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XmlDocumentationProvider"/> class.
+        /// Initializes a new instance of the <see cref="XmlDocumentationProvider" /> class.
         /// </summary>
-        /// <param name="documentPath">The physical path to XML document.</param>
-        public XmlDocumentationProvider(string documentPath)
+        /// <param name="documentPaths">The document paths.</param>
+        /// <exception cref="System.ArgumentNullException">documentPaths</exception>
+        public XmlDocumentationProvider(IEnumerable<string> documentPaths)
         {
-            if (documentPath == null)
+            if (!documentPaths.Any())
             {
-                throw new ArgumentNullException("documentPath");
+                throw new ArgumentNullException("documentPaths");
             }
-            XPathDocument xpath = new XPathDocument(documentPath);
-            _documentNavigator = xpath.CreateNavigator();
+
+            foreach (var file in documentPaths)
+            {
+                XPathDocument xpath = new XPathDocument(file);
+                _documentNavigators.Add(xpath.CreateNavigator());
+            }
+        }
+
+        private XPathNavigator SelectSingleNode(string selectExpression)
+        {
+            foreach (var navigator in _documentNavigators)
+            {
+                var propertyNode = navigator.SelectSingleNode(selectExpression);
+                if (propertyNode != null)
+                    return propertyNode;
+            }
+            return null;
         }
 
         public string GetDocumentation(HttpControllerDescriptor controllerDescriptor)
@@ -78,7 +99,7 @@ namespace ExternalAPIControllersSample.Areas.HelpPage
             string memberName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(member.DeclaringType), member.Name);
             string expression = member.MemberType == MemberTypes.Field ? FieldExpression : PropertyExpression;
             string selectExpression = String.Format(CultureInfo.InvariantCulture, expression, memberName);
-            XPathNavigator propertyNode = _documentNavigator.SelectSingleNode(selectExpression);
+            XPathNavigator propertyNode = SelectSingleNode(selectExpression);
             return GetTagValue(propertyNode, "summary");
         }
 
@@ -94,7 +115,7 @@ namespace ExternalAPIControllersSample.Areas.HelpPage
             if (reflectedActionDescriptor != null)
             {
                 string selectExpression = String.Format(CultureInfo.InvariantCulture, MethodExpression, GetMemberName(reflectedActionDescriptor.MethodInfo));
-                return _documentNavigator.SelectSingleNode(selectExpression);
+                return SelectSingleNode(selectExpression);
             }
 
             return null;
@@ -131,7 +152,7 @@ namespace ExternalAPIControllersSample.Areas.HelpPage
         {
             string controllerTypeName = GetTypeName(type);
             string selectExpression = String.Format(CultureInfo.InvariantCulture, TypeExpression, controllerTypeName);
-            return _documentNavigator.SelectSingleNode(selectExpression);
+            return SelectSingleNode(selectExpression);
         }
 
         private static string GetTypeName(Type type)

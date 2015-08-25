@@ -39,6 +39,6 @@ namespace ExternalAPIControllersSample
             return Directory.GetFiles(path, "*Controller*.dll").Select(Assembly.LoadFrom).ToArray();
         }
 
-        private static IEnumerable<string> GetXmlCommentsPaths() => Directory.GetFiles(HttpContext.Current.Server.MapPath("~/App_Data"), "*.xml");
+        public static IEnumerable<string> GetXmlCommentsPaths() => Directory.GetFiles(HttpContext.Current.Server.MapPath("~/App_Data"), "*.xml");
     }
 }
