@@ -214,3 +214,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+ExternalAPIControllersSample/App_Data/ExternalAPIControllersSample.XML
+ExternalAPIControllersSample/App_Data/ExternalController.xml
+ExternalController/ExternalController.xml

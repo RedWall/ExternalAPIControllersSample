@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace ExternalAPIControllersSample.Controllers
+namespace ExternalController.Controllers
 {
-    public class ValuesController : ApiController
+    public class ExternalValuesController : ApiController
     {
-        // GET api/values
+        // GET api/externalvalues
         /// <summary>
-        /// Gets all of the values
+        /// Gets the list of values
         /// </summary>
         /// <returns></returns>
         public IEnumerable<string> Get()
@@ -19,9 +19,9 @@ namespace ExternalAPIControllersSample.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/values/5
+        // GET api/externalvalues/5
         /// <summary>
-        /// Gets the specified value.
+        /// Gets the specified value
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
@@ -30,7 +30,7 @@ namespace ExternalAPIControllersSample.Controllers
             return "value";
         }
 
-        // POST api/values
+        // POST api/externalvalues
         /// <summary>
         /// Creates the value
         /// </summary>
@@ -39,7 +39,7 @@ namespace ExternalAPIControllersSample.Controllers
         {
         }
 
-        // PUT api/values/5
+        // PUT api/externalvalues/5
         /// <summary>
         /// Creates or updates the value
         /// </summary>
@@ -49,7 +49,7 @@ namespace ExternalAPIControllersSample.Controllers
         {
         }
 
-        // DELETE api/values/5
+        // DELETE api/externalvalues/5
         /// <summary>
         /// Deletes the value
         /// </summary>

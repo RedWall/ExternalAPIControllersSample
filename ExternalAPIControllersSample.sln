@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalAPIControllersSampl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{0955BDFC-77B2-4B41-8A41-BFB1C5ED4596}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalController", "..\ExternalController\ExternalController.csproj", "{BE9CF959-3242-4C08-A7FC-DD82C5748E0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalController", "ExternalController\ExternalController.csproj", "{BE9CF959-3242-4C08-A7FC-DD82C5748E0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

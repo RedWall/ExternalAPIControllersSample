@@ -16,6 +16,9 @@ namespace ExternalAPIControllersSample
     {
         protected void Application_Start()
         {
+            var xmlCommentsFilePaths = GetXmlCommentsPaths();
+            SwaggerConfig.Register(xmlCommentsFilePaths);
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -35,5 +38,7 @@ namespace ExternalAPIControllersSample
 
             return Directory.GetFiles(path, "*Controller*.dll").Select(Assembly.LoadFrom).ToArray();
         }
+
+        private static IEnumerable<string> GetXmlCommentsPaths() => Directory.GetFiles(HttpContext.Current.Server.MapPath("~/App_Data"), "*.xml");
     }
 }
